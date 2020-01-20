@@ -8,7 +8,7 @@ test:
   script:
   - hugo
   except:
-  - master
+  - published
 
 pages:
   script:
