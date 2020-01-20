@@ -6,13 +6,13 @@ variables:
 
 test:
   script:
-  - hugo
+  - hugo build
   except:
   - master
 
 pages:
   script:
-  - hugo
+  - hugo build
   artifacts:
     paths:
     - public
