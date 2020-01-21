@@ -1,7 +1,7 @@
 title = "Dev Blog"
 # Add an trailing slash to ensure that all fonts render correctly.
 baseURL = "https://blog.quartx.ie/"
-theme = "bilberry-hugo-theme"
+#theme = "bilberry-hugo-theme"
 
 enableRobotsTXT = true
 
