@@ -1,5 +1,5 @@
 ---
-title: "Setting up an Elasticsearch, Fluentd and kibana (EFK) Stack"
+title: "Setting up an Elasticsearch, Fluentd and Kibana (EFK) Stack"
 date: 2020-01-05T18:09:00Z
 categories: ['Code', 'Tutorials']
 tags: ['Logging', 'DevOps']
@@ -8,17 +8,17 @@ draft: false
 ---
 
 When it comes to managing our currently small infrastructure, it became clear very early on that logging is vital.
-taking the proper care in logging everything in the code base etc. was carried out, However we had one 
-small problem, it was a very difficult job to go visit any or all of these logs, weather it be system logs, docker logs or
+Taking the proper care in logging everything in the code base etc. was carried out. However we had one 
+small problem, it was a very difficult job to go visit any or all of these logs, whether it be system logs, docker logs or
 logs directly from our main application.
 
-Heres where the journey to look into implementing a centralized logging system began. There was a few important key features we needed,
+Here's where the journey to look into implementing a centralised logging system began. There was a few important key features we needed:
 
 <!--more-->
 
 1. The ability to store and collect logs of any kind by pulling from any location at any time.
 
-2. Using open source technology to achive all this. 
+2. Using open source technology to achieve all this. 
 
 3. Being able to filter, aggregate, compare and analyze the logs.
 
@@ -37,7 +37,7 @@ the following components respectivally,
 
 
 
-__These are the steps to mannually set up the EFK stack:__
+__These are the steps to manually set up the EFK stack:__
 
 
 We will be setting up each component in its own Docker container. Docker enables us to deploy
@@ -60,7 +60,7 @@ is achieved by executing the following docker command.
 sudo docker network create efk
 ```
 
-- Depoly Elasticsearch using the following docker command:
+- Deploy Elasticsearch using the following docker command:
 
 ```sh
 sudo docker run --network=efk --name elasticsearch -d -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -e "cluster.name=docker-cluster" -e "bootstrap.memory_lock=true" -e "ES_JAVA_OPTS=-Xms512m -Xmx512m" --ulimit memlock=-1:-1 -v elasticdata:/usr/share/elasticsearch/data docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.2
@@ -172,7 +172,7 @@ Dockerfile  fluent.conf  plugins
 
 - Building docker image for fluentd
 
- Using the follwoing command you can build the previously made `Dockerfile`, it should create
+ Using the following command you can build the previously made `Dockerfile`, it should create
  an `Image ID` as shown, keep note of this `Image ID` as we will use it for the next command.
 
  ```sh
@@ -208,4 +208,4 @@ Now send a message to fluentd using docker as follows.
 docker run --log-driver=fluentd --log-opt tag="docker.{.ID}}" ubuntu echo 'Hello Fluentd!'
 ```
 
-This should not be visible in the Kibana Dashboard.
+This should now be visible in the Kibana Dashboard.
