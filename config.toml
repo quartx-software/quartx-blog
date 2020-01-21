@@ -1,6 +1,6 @@
 title = "Dev Blog"
 # Add an trailing slash to ensure that all fonts render correctly.
-baseURL = "https://blog.quartx.ie/"
+baseURL = "http://quartx.gitlab.io/quartx-blog/"
 theme = "beautifulhugo"
 
 enableRobotsTXT = true
