@@ -1,7 +1,9 @@
-title = "Dev Blog"
+title = "Quartx Dev Blog"
 # Add an trailing slash to ensure that all fonts render correctly.
 baseURL = "https://blog.quartx.ie/"
 theme = "bilberry-hugo-theme"
+
+
 
 enableRobotsTXT = true
 
@@ -19,8 +21,11 @@ disqusShortname = "quartx_blog"
   hrefTargetBlank = false
 
 [params]
+
+  customImage = "images/black_white_quartx_logo.png"
+  
   # Favicon for the browser's favorites and tabs
-  favicon = "" # set a favicon icon
+  favicon = "images/favicon.ico" # set a favicon icon
 
   # Custom CSS / JS modules that will be imported by the template.
   # Files are relative to the static/ directory or a URL.
@@ -30,9 +35,9 @@ disqusShortname = "quartx_blog"
   js_modules = []
 
   # Description and meta data for the search engines
-  author = "Lednerb"
-  description = "Bilberry Premium Theme for Hugo."
-  keywords = "blog,personal,responsive,search,font awesome,pages,posts,multilingual,highlight.js,syntax highlighting,premium,shortcuts"
+  author = "Quartx"
+  description = "Quartx is a new and upcoming Data Analytics startup company."
+  keywords = "blog,quartx,quartx analytics,dev blog,pages,posts,multilingual,highlight.js,syntax highlighting,premium,shortcuts"
 
   # How many articles should be displayed at once?
   paginate = 7
@@ -57,13 +62,10 @@ disqusShortname = "quartx_blog"
 
   # Header configuration
     # your subtitle if you want to use any
-    subtitle = "A up and incoming software start-ups techinal journey."
+    subtitle = "A new and upcoming Data Analytics startups techinal journey."
 
     # if you want to use gravatar for the header image
     gravatarEMail = "info@quartx.ie"
-
-    # set an path to the image file you want to use | overwrites gravatar
-    customImage = ""
 
     # define the icon you want to use for the overlay for the customImage or gravatar.
     overlayIcon = "fa-home"
@@ -109,16 +111,16 @@ disqusShortname = "quartx_blog"
     showSocialMedia = true
 
     facebook   = ""
-    twitter    = "https://twitter.com/quartx_software"
+    twitter    = "https://twitter.com/quartx_ie"
     googleplus = ""
     pinterest  = ""
-    instagram  = ""
+    instagram  = "https://www.instagram.com/quartx_ie/"
     tumblr     = ""
     youtube    = ""
     vimeo      = ""
     github     = "https://github.com/quartx-software"
     xing       = ""
-    linkedin   = ""
+    linkedin   = "https://www.linkedin.com/company/quartx-analytics/"
 
     # credits line configuration
     copyrightBy = "by Quartx"
