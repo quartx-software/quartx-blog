@@ -1,6 +1,6 @@
 title = "Quartx Dev Blog"
 # Add an trailing slash to ensure that all fonts render correctly.
-baseURL = "https://blog2.quartx.ie/"
+baseURL = "https://blog.quartx.ie/"
 theme = "bilberry-hugo-theme"
 
 
@@ -23,7 +23,7 @@ disqusShortname = "quartx_blog"
 [params]
 
   customImage = "images/black_white_quartx_logo.png"
-  
+
   # Favicon for the browser's favorites and tabs
   favicon = "images/favicon.ico" # set a favicon icon
 
