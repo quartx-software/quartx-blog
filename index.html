@@ -1,0 +1,86 @@
+<!doctype html><html class=no-js lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content="Quartx"><meta name=description content="Quartx is a new and upcoming Data Analytics startup company."><meta name=keywords content="blog,quartx,quartx analytics,dev blog,pages,posts,multilingual,highlight.js,syntax highlighting,premium,shortcuts"><meta name=generator content="Hugo 0.83.1"><title>A new and upcoming Data Analytics startups techinal journey. | Quartx Dev Blog</title><meta name=description content="Quartx is a new and upcoming Data Analytics startup company."><meta itemprop=name content="A new and upcoming Data Analytics startups techinal journey."><meta itemprop=description content="Quartx is a new and upcoming Data Analytics startup company."><meta property="og:title" content="A new and upcoming Data Analytics startups techinal journey."><meta property="og:description" content="Quartx is a new and upcoming Data Analytics startup company."><meta property="og:image" content="https://www.gravatar.com/avatar/4bd652c39118a964d6bf55357f1dbd03?size=200"><meta property="og:url" content="https://blog2.quartx.ie/"><meta property="og:site_name" content="Quartx Dev Blog"><meta property="og:type" content="website"><link rel=icon type=image/png href=https://blog2.quartx.ie/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=https://blog2.quartx.ie/favicon-16x16.png sizes=16x16><link href=/ rel=alternate type=application/rss+xml title="Quartx Dev Blog"><link href=/ rel=feed type=application/rss+xml title="Quartx Dev Blog"><link rel=stylesheet href=/sass/combined.min.ec296bbc4e98c43c2f493d99ea1032ebc1f844f414d40e360c04349acf114267.css></head><body class=bilberry-hugo-theme><nav><div class=container><ul class=topnav></ul><div id=search-box class=search><i class="fa fa-search"></i>
+<input id=search type=text placeholder="Search ..."></div></div></nav><header><div class=container><div class=logo><a href=/ class=logo><img src=/images/black_white_quartx_logo.png alt>
+<span class=overlay><i class="fa fa-home"></i></span></a></div><div class=titles><h3 class=title><a href=/>Quartx Dev Blog</a></h3><span class=subtitle>A new and upcoming Data Analytics startups techinal journey.</span></div><div class=toggler><i class="fa fa-bars" aria-hidden=true></i></div></div></header><div class="main container"><div class="article-wrapper u-cf"><a class=bubble href=https://blog2.quartx.ie/code/efk_stack/><i class="fa fa-fw fa-code"></i></a><article class="default article"><div class=featured-image><a href=https://blog2.quartx.ie/code/efk_stack/><img src=/code/efk_stack/featuredImage_huc6a0ebeed963b41a0da4f6e63f5aa319_23813_700x350_fill_q95_box_smart1.jpg alt></a></div><div class=content><h3><a href=https://blog2.quartx.ie/code/efk_stack/>Setting up an Elasticsearch, Fluentd and Kibana (EFK) Stack</a></h3><div class=meta><span class="date moment">2020-01-05</span>
+<span class=categories><a href=/categories/code>Code</a>
+<a href=/categories/tutorials>Tutorials</a></span>
+<span class=author><a href=/author/michael-forde>Michael Forde</a></span></div><p>When it comes to managing our currently small infrastructure, it became clear very early on that logging is vital.
+Taking the proper care in logging everything in the code base etc. was carried out. However we had one
+small problem, it was a very difficult job to go visit any or all of these logs, whether it be system logs, docker logs or
+logs directly from our main application.</p><p>Here&rsquo;s where the journey to look into implementing a centralised logging system began. There was a few important key features we needed:</p><ol><li><p>The ability to store and collect logs of any kind by pulling from any location at any time.</p></li><li><p>Using open source technology to achieve all this.</p></li><li><p>Being able to filter, aggregate, compare and analyze the logs.</p></li></ol><p>After doing a bit of research, I found a nice group of components which make up a stack called <code>EFK</code> named after
+the following components respectivally,</p><p><strong>Elasticsearch</strong>: An open source distributed, RESTful search and analyics engine.</p><p><strong>Fluentd</strong>: An open source data collector with tones of plugins.</p><p><strong>Kibana</strong>: A web UI for Elasticsearch.</p><p><strong>These are the steps to manually set up the EFK stack:</strong></p><p>We will be setting up each component in its own Docker container. Docker enables us to deploy
+each component faster and gives us more control over the behaviour of the components individually.</p><ul><li>Increase the <code>mmap</code> limits by running the following command as root:</li></ul><p>This is required to stop and prevent Elasticsearch from crashing.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sudo sysctl -w vm.max_map_count<span style=color:#f92672>=</span><span style=color:#ae81ff>262144</span>
+</code></pre></div><ul><li>Set up a docker <code>network</code>:</li></ul><p>We must set up a docker network to allow the containers communicate with each other, this
+is achieved by executing the following docker command.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sudo docker network create efk
+</code></pre></div><ul><li>Deploy Elasticsearch using the following docker command:</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sudo docker run --network<span style=color:#f92672>=</span>efk --name elasticsearch -d -p 9200:9200 -p 9300:9300 -e <span style=color:#e6db74>&#34;discovery.type=single-node&#34;</span> -e <span style=color:#e6db74>&#34;cluster.name=docker-cluster&#34;</span> -e <span style=color:#e6db74>&#34;bootstrap.memory_lock=true&#34;</span> -e <span style=color:#e6db74>&#34;ES_JAVA_OPTS=-Xms512m -Xmx512m&#34;</span> --ulimit memlock<span style=color:#f92672>=</span>-1:-1 -v elasticdata:/usr/share/elasticsearch/data docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.2
+</code></pre></div><p>You can verify if this container is running using the following command.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sudo docker ps
+</code></pre></div><p>This should output a response similar to this.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>╰─❯ sudo docker ps 
+CONTAINER ID        IMAGE                                                     COMMAND                  CREATED             STATUS              PORTS                                            NAMES
+dd2add2fb581        docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.2   <span style=color:#e6db74>&#34;/usr/local/bin/dock…&#34;</span>   <span style=color:#ae81ff>28</span> minutes ago      Up <span style=color:#ae81ff>28</span> minutes       0.0.0.0:9200-&gt;9200/tcp, 0.0.0.0:9300-&gt;9300/tcp   elasticsearch
+
+</code></pre></div><ul><li>Deploying Kibana using the following command</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sudo docker run --network<span style=color:#f92672>=</span>efk --name kibana -d -p 5601:5601 docker.elastic.co/kibana/kibana-oss:6.2.2
+</code></pre></div><p>Verify using the same command again to check if the container has started.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>╰─❯ sudo docker ps
+CONTAINER ID        IMAGE                                                     COMMAND                  CREATED              STATUS              PORTS                                            NAMES
+7bcb4595347b        docker.elastic.co/kibana/kibana-oss:6.2.2                 <span style=color:#e6db74>&#34;/bin/bash /usr/loca…&#34;</span>   About a minute ago   Up About a minute   0.0.0.0:5601-&gt;5601/tcp                           kibana
+dd2add2fb581        docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.2   <span style=color:#e6db74>&#34;/usr/local/bin/dock…&#34;</span>   <span style=color:#ae81ff>36</span> minutes ago       Up <span style=color:#ae81ff>36</span> minutes       0.0.0.0:9200-&gt;9200/tcp, 0.0.0.0:9300-&gt;9300/tcp   elasticsearch
+
+</code></pre></div><ul><li>Configuring Fluentd to collect logs</li></ul><p>Create a directory structure for Fluentd configuration.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>mkdir -p fluentd/plugins
+</code></pre></div><p>Now lets create a Fluentd config file.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>nano fluentd/fluent.conf
+</code></pre></div><p>For example, I will use the configuration to pull logs from docker containers, paste this
+example into your <code>fluentd/fluent.conf</code>.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-xml data-lang=xml><span style=color:#f92672>&lt;source&gt;</span>
+  @type forward
+  port 24224
+  bind 0.0.0.0
+<span style=color:#f92672>&lt;/source&gt;</span>
+<span style=color:#f92672>&lt;match</span> <span style=color:#960050;background-color:#1e0010>*.**</span><span style=color:#f92672>&gt;</span>
+  @type copy
+  <span style=color:#f92672>&lt;store&gt;</span>
+    @type elasticsearch
+    host elasticsearch
+    port 9200
+    logstash_format true
+    logstash_prefix fluentd
+    logstash_dateformat %Y%m%d
+    include_tag_key true
+    type_name access_log
+    tag_key @log_name
+    flush_interval 1s
+  <span style=color:#f92672>&lt;/store&gt;</span>
+  <span style=color:#f92672>&lt;store&gt;</span>
+    @type stdout
+  <span style=color:#f92672>&lt;/store&gt;</span>
+<span style=color:#f92672>&lt;/match&gt;</span>
+</code></pre></div><ul><li>Setting up a <code>Dockerfile</code> for fluentd</li></ul><p>Create another file in the <code>fluentd</code> directory called <code>Dockerfile</code>.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>nano fluentd/Dockerfile
+</code></pre></div><p>Adding in the following config to build a docker image.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>FROM fluent/fluentd:v0.12-onbuild
+
+RUN apk add --update --virtual .build-deps <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>        sudo build-base ruby-dev <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span> <span style=color:#f92672>&amp;&amp;</span> sudo gem install <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>        fluent-plugin-elasticsearch <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span> <span style=color:#f92672>&amp;&amp;</span> sudo gem sources --clear-all <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span> <span style=color:#f92672>&amp;&amp;</span> apk del .build-deps <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span> <span style=color:#f92672>&amp;&amp;</span> rm -rf /var/cache/apk/* <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>           /home/fluent/.gem/ruby/2.3.0/cache/*.gem
+</code></pre></div><p>Now the directory should look like the following.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>╰─❯ ls fluentd
+Dockerfile  fluent.conf  plugins
+</code></pre></div><ul><li>Building docker image for fluentd</li></ul><p>Using the following command you can build the previously made <code>Dockerfile</code>, it should create
+an <code>Image ID</code> as shown, keep note of this <code>Image ID</code> as we will use it for the next command.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sudo docker build fluentd/
+
+...
+...
+
+Successfully built &lt;Image ID&gt;
+</code></pre></div><ul><li>Deploying fluentd</li></ul><p>Take note of the <code>Image ID</code> from the last step, and run the following command with the <code>Image ID</code>
+included to deploy the fluentd container.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sudo docker run -d --network efk --name fluentd -p 24224:24224/tcp -p 42185:42185/udp &lt;Image ID&gt;
+</code></pre></div><ul><li>Checking if it works</li></ul><p>First go and see if kibana is up by going to the port you have set it,
+in our case it is set as following.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>http://0.0.0.0:5601
+</code></pre></div><p>Now send a message to fluentd using docker as follows.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>docker run --log-driver<span style=color:#f92672>=</span>fluentd --log-opt tag<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;docker.{.ID}}&#34;</span> ubuntu echo <span style=color:#e6db74>&#39;Hello Fluentd!&#39;</span>
+</code></pre></div><p>This should now be visible in the Kibana Dashboard.</p></div><div class=footer><div class=tags><i class="fa fa-tags"></i><div class=links><a href=/tags/logging>Logging</a>
+<a href=/tags/devops>DevOps</a></div></div></div></article></div><div class=paginator></div></div><footer><div class=container><div class=recent-posts><strong>Latest posts</strong><ul><li><a href=https://blog2.quartx.ie/code/efk_stack/>Setting up an Elasticsearch, Fluentd and Kibana (EFK) Stack</a></li></ul></div><div class=categories><a href=/categories/><strong>Categories</strong></a><ul><li><a href=/categories/code>Code (1)</a></li><li><a href=/categories/tutorials>Tutorials (1)</a></li></ul></div><div class=right><div class=external-profiles><strong>Social media</strong>
+<a href=https://twitter.com/quartx_ie target=_blank><i class="fa fa-twitter-adblock-proof"></i></a>
+<a href=https://www.instagram.com/quartx_ie/ target=_blank><i class="fa fa-instagram"></i></a>
+<a href=https://github.com/quartx-software target=_blank><i class="fa fa-github"></i></a>
+<a href=https://www.linkedin.com/company/quartx-analytics/ target=_blank><i class="fa fa-linkedin"></i></a></div></div></div></footer><div class=credits><div class=container><div class=copyright><a href=https://github.com/quartx-software target=_blank>&copy;
+2019
+by Quartx</a>
+-
+<a href=https://blog2.quartx.ie/index.xml>RSS</a></div><div class=author><a href=https://github.com/Lednerb/bilberry-hugo-theme target=_blank>Quartx Dev Blog</a></div></div></div><script type=text/javascript src=/js/externalDependencies.39c47e10e241eae2947b3fe21809c572.js integrity="md5-OcR+EOJB6uKUez/iGAnFcg=="></script><script type=text/javascript src=/js/theme.ff50ae6dc1bfc220b23bf69dbb41b54e.js integrity="md5-/1CubcG/wiCyO/adu0G1Tg=="></script><script>$(".moment").each(function(){$(this).text(moment($(this).text()).locale("en").format('LL'))}),$(".footnote-return sup").html("")</script><script>var client=algoliasearch("Y2C4RWMPXW","50ea7f8c41c0ad233926e0be2b769ed1"),index=client.initIndex("default-content");$('#search').autocomplete({hint:!1,autoselect:!0,debug:!1},[{source:$.fn.autocomplete.sources.hits(index,{hitsPerPage:5,filters:'language: en'}),displayKey:function(a){return a.title||a.author},templates:{suggestion:function(a){return"<span class='entry "+a.type+"'>"+"<span class='title'>"+a.title+"</span>"+"<span class='fa fa-fw "+a.iconClass+"'></span>"+"</span>"},empty:function(){return"<span class='empty'>Nothing found.</span>"},footer:function(){return'<div class="branding">Powered by <img src="https://blog2.quartx.ie/dist/algolia-logo-light.svg" /></div>'}}}]).on('autocomplete:selected',function(b,a,c){window.location=a.url}).keypress(function(a,b){a.which==13&&(window.location=b.url)})</script></body></html>
